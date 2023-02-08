@@ -49,30 +49,25 @@ public class Parser {
                 currentAction = parseTable.getActionTable(parsStack.peek(), lookAhead);
                 Log.print(currentAction.toString());
 
-                switch (currentAction.action) {
-                    case shift:
-                        parsStack.push(currentAction.number);
-                        lookAhead = lexicalAnalyzer.getNextToken();
+                if (currentAction.action == act.shift) {
+                    parsStack.push(currentAction.number);
+                    lookAhead = lexicalAnalyzer.getNextToken();
+                } else if (currentAction.action == act.reduce) {
+                    Rule rule = rules.get(currentAction.number);
+                    for (int i = 0; i < rule.RHS.size(); i++) {
+                        parsStack.pop();
+                    }
 
-                        break;
-                    case reduce:
-                        Rule rule = rules.get(currentAction.number);
-                        for (int i = 0; i < rule.RHS.size(); i++) {
-                            parsStack.pop();
-                        }
-
-                        Log.print(parsStack.peek() + "\t" + rule.LHS);
-                        parsStack.push(parseTable.getGotoTable(parsStack.peek(), rule.LHS));
-                        Log.print(parsStack.peek() + "");
-                        try {
-                            cgf.semanticFunction(rule.semanticAction, lookAhead);
-                        } catch (Exception e) {
-                            Log.print("Code Genetator Error");
-                        }
-                        break;
-                    case accept:
-                        finish = true;
-                        break;
+                    Log.print(parsStack.peek() + "\t" + rule.LHS);
+                    parsStack.push(parseTable.getGotoTable(parsStack.peek(), rule.LHS));
+                    Log.print(parsStack.peek() + "");
+                    try {
+                        cgf.semanticFunction(rule.semanticAction, lookAhead);
+                    } catch (Exception e) {
+                        Log.print("Code Genetator Error");
+                    }
+                } else if (currentAction.action == act.accept) {
+                    finish = true;
                 }
                 Log.print("");
             } catch (Exception e) {

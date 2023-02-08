@@ -22,13 +22,12 @@ public class Address {
     }
 
     public String toString() {
-        switch (getType()) {
-            case Direct:
-                return getNum() + "";
-            case Indirect:
-                return "@" + getNum();
-            case Imidiate:
-                return "#" + getNum();
+        if (getType() == TypeAddress.Direct) {
+            return getNum() + "";
+        } else if (getType() == TypeAddress.Indirect) {
+            return "@" + getNum();
+        } else if (getType() == TypeAddress.Imidiate) {
+            return "#" + getNum();
         }
         return getNum() + "";
     }

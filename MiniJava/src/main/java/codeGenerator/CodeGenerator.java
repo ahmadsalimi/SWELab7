@@ -30,108 +30,72 @@ public class CodeGenerator {
 
     public void semanticFunction(int func, Token next) {
         Log.print("codegenerator : " + func);
-        switch (func) {
-            case 0:
-                return;
-            case 1:
-                checkID();
-                break;
-            case 2:
-                pid(next);
-                break;
-            case 3:
-                fpid();
-                break;
-            case 4:
-                kpid(next);
-                break;
-            case 5:
-                intpid(next);
-                break;
-            case 6:
-                startCall();
-                break;
-            case 7:
-                call();
-                break;
-            case 8:
-                arg();
-                break;
-            case 9:
-                assign();
-                break;
-            case 10:
-                add();
-                break;
-            case 11:
-                sub();
-                break;
-            case 12:
-                mult();
-                break;
-            case 13:
-                label();
-                break;
-            case 14:
-                save();
-                break;
-            case 15:
-                _while();
-                break;
-            case 16:
-                jpf_save();
-                break;
-            case 17:
-                jpHere();
-                break;
-            case 18:
-                print();
-                break;
-            case 19:
-                equal();
-                break;
-            case 20:
-                less_than();
-                break;
-            case 21:
-                and();
-                break;
-            case 22:
-                not();
-                break;
-            case 23:
-                defClass();
-                break;
-            case 24:
-                defMethod();
-                break;
-            case 25:
-                popClass();
-                break;
-            case 26:
-                extend();
-                break;
-            case 27:
-                defField();
-                break;
-            case 28:
-                defVar();
-                break;
-            case 29:
-                methodReturn();
-                break;
-            case 30:
-                defParam();
-                break;
-            case 31:
-                lastTypeBool();
-                break;
-            case 32:
-                lastTypeInt();
-                break;
-            case 33:
-                defMain();
-                break;
+        if (func == 1) {
+            checkID();
+        } else if (func == 2) {
+            pid(next);
+        } else if (func == 3) {
+            fpid();
+        } else if (func == 4) {
+            kpid(next);
+        } else if (func == 5) {
+            intpid(next);
+        } else if (func == 6) {
+            startCall();
+        } else if (func == 7) {
+            call();
+        } else if (func == 8) {
+            arg();
+        } else if (func == 9) {
+            assign();
+        } else if (func == 10) {
+            add();
+        } else if (func == 11) {
+            sub();
+        } else if (func == 12) {
+            mult();
+        } else if (func == 13) {
+            label();
+        } else if (func == 14) {
+            save();
+        } else if (func == 15) {
+            _while();
+        } else if (func == 16) {
+            jpf_save();
+        } else if (func == 17) {
+            jpHere();
+        } else if (func == 18) {
+            print();
+        } else if (func == 19) {
+            equal();
+        } else if (func == 20) {
+            less_than();
+        } else if (func == 21) {
+            and();
+        } else if (func == 22) {
+            not();
+        } else if (func == 23) {
+            defClass();
+        } else if (func == 24) {
+            defMethod();
+        } else if (func == 25) {
+            popClass();
+        } else if (func == 26) {
+            extend();
+        } else if (func == 27) {
+            defField();
+        } else if (func == 28) {
+            defVar();
+        } else if (func == 29) {
+            methodReturn();
+        } else if (func == 30) {
+            defParam();
+        } else if (func == 31) {
+            lastTypeBool();
+        } else if (func == 32) {
+            lastTypeInt();
+        } else if (func == 33) {
+            defMain();
         }
     }
 
@@ -162,13 +126,10 @@ public class CodeGenerator {
 
                 Symbol s = symbolTable.get(className, methodName, next.value);
                 varType t = varType.Int;
-                switch (s.type) {
-                    case Bool:
-                        t = varType.Bool;
-                        break;
-                    case Int:
-                        t = varType.Int;
-                        break;
+                if (s.type == SymbolType.Bool) {
+                    t = varType.Bool;
+                } else if (s.type == SymbolType.Int) {
+                    t = varType.Int;
                 }
                 ss.push(new Address(s.address, t));
 
@@ -190,13 +151,10 @@ public class CodeGenerator {
 
         Symbol s = symbolTable.get(symbolStack.pop(), symbolStack.pop());
         varType t = varType.Int;
-        switch (s.type) {
-            case Bool:
-                t = varType.Bool;
-                break;
-            case Int:
-                t = varType.Int;
-                break;
+        if (s.type == SymbolType.Bool) {
+            t = varType.Bool;
+        } else if (s.type == SymbolType.Int) {
+            t = varType.Int;
         }
         ss.push(new Address(s.address, t));
 
@@ -231,13 +189,11 @@ public class CodeGenerator {
         } catch (IndexOutOfBoundsException ignored) {
         }
         varType t = varType.Int;
-        switch (symbolTable.getMethodReturnType(className, methodName)) {
-            case Int:
-                t = varType.Int;
-                break;
-            case Bool:
-                t = varType.Bool;
-                break;
+        SymbolType methodReturnType = symbolTable.getMethodReturnType(className, methodName);
+        if (methodReturnType == SymbolType.Int) {
+            t = varType.Int;
+        } else if (methodReturnType == SymbolType.Bool) {
+            t = varType.Bool;
         }
         Address temp = new Address(memory.getLastTempIndex(), t);
         memory.increaseLastTempIndex();
@@ -254,13 +210,10 @@ public class CodeGenerator {
         try {
             Symbol s = symbolTable.getNextParam(callStack.peek(), methodName);
             varType t = varType.Int;
-            switch (s.type) {
-                case Bool:
-                    t = varType.Bool;
-                    break;
-                case Int:
-                    t = varType.Int;
-                    break;
+            if (s.type == SymbolType.Bool) {
+                t = varType.Bool;
+            } else if (s.type == SymbolType.Int) {
+                t = varType.Int;
             }
             Address param = ss.pop();
             if (param.getVarType() != t) {
@@ -445,11 +398,10 @@ public class CodeGenerator {
         Address s = ss.pop();
         SymbolType t = symbolTable.getMethodReturnType(symbolStack.peek(), methodName);
         varType temp = varType.Int;
-        switch (t) {
-            case Int:
-                break;
-            case Bool:
+        if (t != SymbolType.Int) {
+            if (t == SymbolType.Bool) {
                 temp = varType.Bool;
+            }
         }
         if (s.getVarType() != temp) {
             ErrorHandler.printError("The type of method and return address was not match");
